@@ -1,1 +1,2 @@
-runtime: "typescript"
+# runtime: "typescript"
+runtime: "container"
