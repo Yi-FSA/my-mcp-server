@@ -3,11 +3,14 @@
     "version": "1.0.0",
     "main": "index.js",
     "type": "module",
+    "module": "src/index.ts",  
     "bin": {
         "mcp-server": "./build/index.js"
     },
     "scripts": {
-        "build": "tsc"
+        "build": "npx @smithery/cli build",
+        "dev": "npx @smithery/cli dev",
+        "build:tsc": "tsc"
     },
     "files": [
         "build"
