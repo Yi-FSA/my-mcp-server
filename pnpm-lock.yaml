@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@huggingface/inference':
+        specifier: ^4.8.0
+        version: 4.8.0
       '@modelcontextprotocol/sdk':
         specifier: ^1.18.1
         version: 1.18.1
+      dotenv:
+        specifier: ^17.2.2
+        version: 17.2.2
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -23,6 +29,17 @@ importers:
         version: 5.9.2
 
 packages:
+
+  '@huggingface/inference@4.8.0':
+    resolution: {integrity: sha512-Eq98EAXqYn4rKMfrbEXuhc3IjKfaeIO6eXNOZk9xk6v5akrIWRtd6d1h0fjAWyX4zRbdUpXRh6MvsqXnzGvXCA==}
+    engines: {node: '>=18'}
+
+  '@huggingface/jinja@0.5.1':
+    resolution: {integrity: sha512-yUZLld4lrM9iFxHCwFQ7D1HW2MWMwSbeB7WzWqFYDWK+rEb+WldkLdAJxUPOmgICMHZLzZGVcVjFh3w/YGubng==}
+    engines: {node: '>=18'}
+
+  '@huggingface/tasks@0.19.48':
+    resolution: {integrity: sha512-9OIMhl6lSvuim0EisMPbwO4fUmMlbAXh5/GIMVAQALoByouockaaDxMuzJ9IffHRsl3qjS+QSD/mPe65kuPeyQ==}
 
   '@modelcontextprotocol/sdk@1.18.1':
     resolution: {integrity: sha512-d//GE8/Yh7aC3e7p+kZG8JqqEAwwDUmAfvH1quogtbk+ksS6E0RR6toKKESPYYZVre0meqkJb27zb+dhqE9Sgw==}
@@ -90,6 +107,10 @@ packages:
   depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
+
+  dotenv@17.2.2:
+    resolution: {integrity: sha512-Sf2LSQP+bOlhKWWyhFsn0UsfdK/kCWRv1iuA2gXAwt3dyNabr6QSj00I2V10pidqz69soatm9ZwZvpQMTIOd5Q==}
+    engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -383,6 +404,15 @@ packages:
 
 snapshots:
 
+  '@huggingface/inference@4.8.0':
+    dependencies:
+      '@huggingface/jinja': 0.5.1
+      '@huggingface/tasks': 0.19.48
+
+  '@huggingface/jinja@0.5.1': {}
+
+  '@huggingface/tasks@0.19.48': {}
+
   '@modelcontextprotocol/sdk@1.18.1':
     dependencies:
       ajv: 6.12.6
@@ -468,6 +498,8 @@ snapshots:
       ms: 2.1.3
 
   depd@2.0.0: {}
+
+  dotenv@17.2.2: {}
 
   dunder-proto@1.0.1:
     dependencies:

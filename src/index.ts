@@ -1,6 +1,10 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod'
+import { InferenceClient } from '@huggingface/inference'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 // Create server instance
 const server = new McpServer({
@@ -185,6 +189,72 @@ server.tool('korea-time', '한국의 현재 시간을 조회하는 도구입니�
     };
 });
 
+// 이미지 생성 Tool 추가
+server.tool('generate-image', '텍스트 프롬프트를 기반으로 이미지를 생성하는 도구입니다.', {
+    prompt: z.string().describe('이미지 생성을 위한 텍스트 프롬프트')
+}, async (args) => {
+    const { prompt } = args;
+    
+    try {
+        // HF_TOKEN 환경변수 확인
+        const hfToken = process.env.HF_TOKEN;
+        if (!hfToken) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: '❌ 오류: HF_TOKEN 환경변수가 설정되지 않았습니다. Hugging Face API 토큰이 필요합니다.'
+                    }
+                ]
+            };
+        }
+
+        // Hugging Face Inference Client 생성
+        const client = new InferenceClient(hfToken);
+        
+        // 이미지 생성
+        const image = await client.textToImage({
+            provider: "fal-ai",
+            model: "black-forest-labs/FLUX.1-schnell",
+            inputs: prompt,
+            parameters: { num_inference_steps: 5 },
+        });
+
+        // Blob을 ArrayBuffer로 변환
+        const arrayBuffer = await (image as unknown as Blob).arrayBuffer();
+        
+        // ArrayBuffer를 Base64로 변환
+        const uint8Array = new Uint8Array(arrayBuffer);
+        const base64String = Buffer.from(uint8Array).toString('base64');
+
+        return {
+            content: [
+                {
+                    type: 'image',
+                    data: base64String,
+                    mimeType: 'image/png'
+                }
+            ],
+            annotations: {
+                audience: ['user'],
+                priority: 0.9
+            }
+        };
+        
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : '알 수 없는 오류가 발생했습니다.';
+        
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: `❌ 이미지 생성 중 오류가 발생했습니다: ${errorMessage}`
+                }
+            ]
+        };
+    }
+});
+
 // 코드 리뷰 프롬프트 추가
 server.prompt('code-review', '사용자가 입력한 코드를 체계적으로 리뷰하기 위한 프롬프트입니다.', {
     code: z.string().describe('리뷰할 코드')
@@ -320,11 +390,33 @@ korea-time(format: "time-only")
 → "오후 2:03:40"
 \`\`\`
 
+### 4. 🎨 이미지 생성 (\`generate-image\`)
+> 텍스트 프롬프트를 기반으로 AI 이미지를 생성하는 도구
+
+**매개변수:**
+- \`prompt\` (필수): 이미지 생성을 위한 텍스트 프롬프트
+
+**특징:**
+- **모델**: FLUX.1-schnell (black-forest-labs)
+- **출력**: Base64 인코딩된 PNG 이미지
+- **품질**: 고품질 AI 생성 이미지
+- **속도**: 빠른 추론 (5 스텝)
+
+**예시:**
+\`\`\`
+generate-image(prompt: "Astronaut riding a horse")
+→ [Base64 인코딩된 이미지 데이터 반환]
+\`\`\`
+
+**필수 설정:**
+- \`HF_TOKEN\` 환경변수에 Hugging Face API 토큰 설정 필요
+
 ## 🏗️ 기술 스택
 - **언어**: TypeScript
 - **런타임**: Node.js
 - **프레임워크**: MCP SDK
 - **스키마 검증**: Zod
+- **AI 이미지 생성**: Hugging Face Inference
 - **빌드 도구**: TypeScript Compiler
 
 ## 📦 설치 및 실행
@@ -360,6 +452,7 @@ code-review(code: "function add(a, b) { return a + b; }")
 - ✅ **다국어 인사**: 한국어, 영어, 일본어 인사 지원
 - ✅ **실시간 시간**: 정확한 한국 표준시
 - ✅ **정확한 계산**: 사칙연산 및 오류 처리
+- ✅ **AI 이미지 생성**: FLUX.1-schnell 모델 기반 고품질 이미지 생성
 - ✅ **전문 코드 리뷰**: AI를 활용한 체계적인 코드 분석
 - ✅ **깔끔한 출력**: 사용자 친화적 인터페이스
 
