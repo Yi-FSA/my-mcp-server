@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+export default function createServer({}) {
 // Create server instance
 const server = new McpServer({
     name: 'Greeting MCP Server',
@@ -478,3 +479,6 @@ async function main() {
 }
 
 main().catch(console.error);
+
+return server.server; // Must return the MCP server object
+}

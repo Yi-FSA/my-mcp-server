@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "main": "index.js",
     "type": "module",
-    "module": "src/index.ts",  
+    "module": "src/index.ts",
     "bin": {
         "mcp-server": "./build/index.js"
     },
@@ -27,6 +27,7 @@
     },
     "devDependencies": {
         "@types/node": "^24.5.2",
+        "tsx": "^4.20.5",
         "typescript": "^5.9.2"
     }
 }
